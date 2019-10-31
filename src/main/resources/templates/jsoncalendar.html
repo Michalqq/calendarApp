@@ -158,9 +158,8 @@
     
     function addEvent(start, end) {
       	var valid = true;
- 			
- 			var eventStart = moment(startdateandtime.value);
- 			var eventEnd = moment(enddateandtime.value);
+ 			var eventStart = moment(startdateandtime.value).add(2,'hours');
+ 			var eventEnd = moment(enddateandtime.value).add(2,'hours');
    
 		valid = valid && newtitle.value;
 	 	valid = valid && startdateandtime.value;
@@ -264,8 +263,8 @@
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {
-				startdateandtime.value = moment(start).format("YYYY-MM-DDTHH:mm:ss");
-				enddateandtime.value = moment(end).format("YYYY-MM-DDTHH:mm:ss");
+				startdateandtime.value = moment(start).add(10, "hours").format("YYYY-MM-DDTHH:mm:ss");
+				enddateandtime.value = moment(end).add(10, "hours").format("YYYY-MM-DDTHH:mm:ss");
 				dialog.dialog( "open" );
 			},
 			eventClick: function(event, element) {
