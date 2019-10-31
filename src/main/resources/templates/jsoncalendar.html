@@ -102,7 +102,7 @@
 	   
     function editEvent(event, elements) {
     	var eventStart = moment(event.start).format("YYYY-MM-DDTHH:mm:ss"); //moment(event.start);
- 			var eventEnd = moment(event.finish).format("YYYY-MM-DDTHH:mm:ss");
+ 		var eventEnd = moment(event.finish).format("YYYY-MM-DDTHH:mm:ss");
 
        	modtitle.value = event.title;
 	    moddescription.value = event.description; 
@@ -112,49 +112,42 @@
 	    editDialog.dialog( "open" );
     }	
     
-    function saveEvent() {
-    	var valid = true;
- 			
-	 	var eventStart = moment(modstartdateandtime.value);
- 			var eventEnd = moment(modenddateandtime.value);
-   
- 			valid = valid && modtitle.value;
-	 	valid = valid && startdateandtime.value;
-	 	valid = valid && validateDateRange(eventStart, eventEnd);
-	   
-		if ( valid ) {
-	    	var eventData;
-			if (modtitle.value) {
-				eventData = {
-					id: moduid.value,
-					title: modtitle.value,
-					start: eventStart,
-					finish:  eventEnd, 
-					description: moddescription.value
-				};
-		//		alert(eventData.title.value + " " + eventData.start.value + " " + eventData.finish.value)
-		//		$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-			}
-			$('#calendar').fullCalendar('unselect');
-    	
-	    	editDialog.dialog( "close" );
-	    	
-	    	$.ajax({
-			    type: "PATCH",
-			    url: "/event",
-			    data: JSON.stringify(eventData),
-			    contentType: "application/json; charset=utf-8",
-			    dataType: "json",
-			    success: function(data){
-			    	$('#calendar').fullCalendar( 'refetchEvents' );
-			    },
-			    failure: function(errMsg) {
-			        alert(errMsg);
-			    }
-			});
-    	}
-	 	return valid;
-    }
+    function updateEvent() {
+
+    var eventStart = moment(modstartdateandtime.value).add(2, 'hours');
+    var eventEnd = moment(modenddateandtime.value).add(2, 'hours');
+
+    var eventData;
+    if (moduid.value) {
+        eventData = {
+            id: moduid.value,
+            title: modtitle.value,
+            start: eventStart,
+            finish:  eventEnd,
+            description: moddescription.value
+        };
+
+    $('#calendar').fullCalendar('unselect');
+
+    editDialog.dialog( "close" );
+    removeEvent()
+
+    $.ajax({
+        type: "PATCH",
+        url: "/event",
+        data: JSON.stringify(eventData),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+            $('#calendar').fullCalendar( 'refetchEvents' );
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+}
+return true;
+}
     
     function addEvent(start, end) {
       	var valid = true;
@@ -219,7 +212,7 @@
 	      width: 350,
 	      modal: true,
 	      buttons: {
-	        Save: saveEvent,
+	        Save: updateEvent,
 	        Delete: removeEvent,
 	        Cancel: function() {
 	          editDialog.dialog( "close" );
@@ -291,6 +284,8 @@
   -->
   
 
+
+
     </script>
     <style>
 
@@ -328,6 +323,8 @@
 	}
 
 
+
+
     </style>
 
     <style>
@@ -360,6 +357,8 @@
 	}
 	
 
+
+
     </style>
 
     <link rel="stylesheet" href="modalstyle.css"/>
@@ -377,6 +376,8 @@
     div#events-contain table td, div#events-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
+
+
 
     </style>
 
